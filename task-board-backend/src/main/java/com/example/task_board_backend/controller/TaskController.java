@@ -16,10 +16,10 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping
-    public List<Task> getTasks() {
-        return taskService.getAllTasks();
-    }
+//    @GetMapping
+//    public List<Task> getTasks() {
+//        return taskService.getAllTasks();
+//    }
 
     @PostMapping
     public Task addTask(@RequestBody Task task) {
