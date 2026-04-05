@@ -5,6 +5,8 @@ import { Layout, Plus, Loader2 } from 'lucide-react';
 import './App.css';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 const COLUMNS = [
   { id: 'todo', title: 'To Do' },
   { id: 'in_progress', title: 'In Progress' },
@@ -27,7 +29,7 @@ function App() {
   const [editData, setEditData] = useState({ title: '', description: '', priority: '' });
   const handleViewDetails = async (taskId) => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/tasks/${taskId}`);
+      const res = await axios.get(`${API_BASE_URL}/api/tasks/${taskId}`);
       setSelectedTask(res.data);
       setIsViewModalOpen(true);
     } catch (err) {
@@ -40,7 +42,7 @@ function App() {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
   
     try {
-      await axios.post(`http://localhost:8080/api/tasks/${taskId}/delete`);
+      await axios.post(`${API_BASE_URL}/api/tasks/${taskId}/delete`);
       setTasks(prev => prev.filter(t => t.id !== taskId)); 
       setIsViewModalOpen(false);
     } catch (err) {
@@ -49,7 +51,7 @@ function App() {
   };
   const handleSaveEdit = async () => {
     try {
-      const res = await axios.put(`http://localhost:8080/api/tasks/${selectedTask.id}/update`, editData);
+      const res = await axios.put(`${API_BASE_URL}/api/tasks/${selectedTask.id}/update`, editData);
       setTasks(prev => prev.map(t => t.id === selectedTask.id ? res.data : t));
       setSelectedTask(res.data); 
       setIsEditing(false);
@@ -63,7 +65,7 @@ function App() {
     if (!newTask.title.trim()) return;
 
     try {
-      const res = await axios.post('http://localhost:8080/api/tasks', {
+      const res = await axios.post(`${API_BASE_URL}/api/tasks`, {
         ...newTask,
         userId: userId,
         status: activeColumn 
@@ -85,7 +87,7 @@ function App() {
         const id = await getOrCreateUser(); 
         if (id) {
           setUserId(id);
-          const res = await axios.get(`http://localhost:8080/api/tasks/user/${id}`);
+          const res = await axios.get(`${API_BASE_URL}/api/tasks/user/${id}`);
           setTasks(res.data);
         }
       } catch (err) {
@@ -144,7 +146,7 @@ function App() {
     console.log(`Task ${taskId} moved from ${source.droppableId} to ${destination.droppableId}`);
     try {
       console.log("Syncing task update to server...", updatedTask);
-      await axios.patch(`http://localhost:8080/api/tasks/${taskId}/status`, updatedTask);
+      await axios.patch(`${API_BASE_URL}/api/tasks/${taskId}/status`, updatedTask);
       console.log("Task synced with database");
     } catch (err) {
       console.error("Failed to update task on server:", err);
