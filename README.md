@@ -1,3 +1,5 @@
 This project is a Task Board where user can manage there tasks visually.
 
 I use React and Vite for frontend and SpringBoot for backend, with datasource of supabase
+
+Please fill in the backend application properties to link it to your own database
